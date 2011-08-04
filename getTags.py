@@ -5,6 +5,7 @@ from multiprocessing import Pool, cpu_count
 from subprocess import check_call
 from os.path import exists
 from utils import example_files
+from tags import tags as old_tags
 
 from namespaces import ns
 
@@ -29,17 +30,25 @@ def getKeys(fname):
     names = set([nameElements(node) for node in nodes])
     return names
 
-def writeNames(names):
+def writeNames(old_tags, new_tags):
     with open('tags.py','w') as f:
         f.write("tags=[\n")
-        for (pre, uri, local) in names:
+        for (pre, uri, local) in old_tags:
             f.write("('%s','%s','%s'),\n"%(pre, uri, local))
+        if new_tags:
+            print "--- New tags!"
+            f.write("# new tags\n")
+            for (pre, uri, local) in new_tags:
+                print "('%s','%s','%s'),\n"%(pre, uri, local)
+                f.write("('%s','%s','%s'),\n"%(pre, uri, local))
         f.write(']\n')
 
 if __name__ == '__main__':
     pool = Pool(cpu_count())
     tags = pool.map(getKeys, example_files)
-    names = reduce(set.union, tags, set())
-    names = list(names)
-    names.sort()
-    writeNames(names)
+    tags = reduce(set.union, tags, set())
+    old_tags_set = set(old_tags)
+    new_tags = [tag for tag in tags if tag not in old_tags_set]
+    old_tags.sort()
+    new_tags.sort()
+    writeNames(old_tags, new_tags)
