@@ -1,2 +1,10 @@
 tests
 .*\.pyc
+conflicts.txt
+validation.xml
+results.txt
+translation.xsl
+numtags.mmd
+Exif2LOM.app
+Exif2LOM.dmg
+tags.py
