@@ -2,26 +2,45 @@
 <transformation xmlns:lom="http://ltsc.ieee.org/xsd/LOM">
 	<group lom="general">
 		<value ns="lom" tag="title">
-			<!-- unordered -->
-			<source valid="" exif="Title"/>
-			<source valid="" exif="ArtworkTitle"/>
-			<source valid="" exif="Name"/>
-			<source valid="" exif="InternalName"/>
-			<source valid="" exif="FileName"/>
-			<source valid="" exif="OriginalFileName"/>
-			<source valid="" exif="ObjectName"/>
-			<source valid="" exif="ProductName"/>
+			<priorityGroup>
+				<!-- unordered -->
+				<source valid="" exif="Title">
+					<exception ns="http://ns.exiftool.ca/PostScript/PostScript/1.0/" />
+					<exception ns="http://ns.exiftool.ca/ID3/ID3v2_2/1.0/" />
+					<exception ns="http://ns.exiftool.ca/ID3/ID3v1/1.0/" />
+				</source>
+				<source valid="" exif="ArtworkTitle"/>
+				<source valid="" exif="Name"/>
+				<source valid="" exif="InternalName"/>
+				<source valid="" exif="ObjectName"/>
+			</priorityGroup>
+			<priorityGroup ordered="true">
+				<source valid="" exif="Title" ns="http://ns.exiftool.ca/ID3/ID3v2_2/1.0/" />
+				<source valid="" exif="Title" ns="http://ns.exiftool.ca/ID3/ID3v1/1.0/" />
+			</priorityGroup>
+			<priorityGroup ordered="true">
+				<source valid="" exif="Title" ns="http://ns.exiftool.ca/PostScript/PostScript/1.0/" />
+				<source valid="" exif="ProductName"/>
+				<source valid="" exif="FileName" ns="http://ns.exiftool.ca/XML/XML-File/1.0/"/>
+				<source valid="" exif="OriginalFileName"/>
+				<source valid="" exif="FileName" />
+			</priorityGroup>
 		</value>
-		<value ns="lom" tag="language">
-			<!-- unordered -->
-			<source valid="" exif="LanguageCode"/>
-			<source valid="" exif="Language"/>
-			<source valid="" exif="TrackLanguage"/>
-			<source valid="" exif="Langue"/>
+		<value ns="lom" tag="language" default="fr">
+			<priorityGroup ordered="true">
+				<source valid="" exif="LanguageCode"/>
+				<source valid="" exif="Language" operation="lang"/>
+				<source valid="" exif="TrackLanguage" operation="lang"/>
+				<source valid="" exif="Langue" operation="lang"/>
+			</priorityGroup>
 		</value>
 		<value ns="lom" tag="description">
 			<!-- unordered -->
-			<source valid="" exif="Description"/>
+			<priorityGroup ordered="true">
+				<source valid="true" exif="Description"/>
+				<source valid="true" exif="Subject"/>
+				<source valid="true" exif="Comments"/>
+			</priorityGroup>
 			<source valid="" exif="FileDescription"/>
 		</value>
 		<value ns="lom" tag="keyword">
@@ -33,144 +52,251 @@
 	</group>
 	<group lom="lifeCycle">
 		<group lom="entity">
-			<value ns="vcard" tag="FN">
-				<!-- unordered -->
-				<source valid="" exif="Author"/>
-				<source valid="" exif="LastAuthor"/>
-				<source valid="" exif="Contributor"/>
-				<source valid="" exif="Writer-Editor"/>
-				<source valid="" exif="Credit"/>
+			<value ns="vcard" tag="FN_lastauthor">
+				<priorityGroup ordered="true">
+					<source valid="" exif="LastModifiedBy"/>
+					<source valid="" exif="LastAuthor"/>
+					<source valid="" exif="Writer-Editor"/>
+					<source valid="" exif="Author"/>
+					<source valid="" exif="Credit"/>
+					<source valid="" exif="Creator">
+						<exception ns="http://ns.exiftool.ca/PDF/PDF/1.0/" />
+					</source>
+				</priorityGroup>
 			</value>
+			<value ns="vcard" tag="FN_author">
+				<priorityGroup ordered="true">
+					<source valid="true" exif="Initial-creator"/>
+					<source valid="" exif="Creator">
+						<exception ns="http://ns.exiftool.ca/PDF/PDF/1.0/" />
+					</source>
+					<source valid="" exif="Author"/>
+					<source valid="" exif="Writer-Editor"/>
+					<source valid="" exif="Credit"/>
+				</priorityGroup>
+			</value>
+			<value ns="vcard" tag="FN_contributor">
+				<priorityGroup ordered="true">
+					<source valid="" exif="Contributor"/>
+					<source valid="" exif="Writer-Editor"/>
+					<source valid="" exif="Author"/>
+					<source valid="" exif="LastAuthor"/>
+					<source valid="" exif="Credit"/>
+				</priorityGroup>
+			</value>
+			<value ns="vcard" tag="COUNTRY">
+				<priorityGroup ordered="true">
+					<source valid="true" exif="Country"/>
+					<source valid="true" exif="Country-PrimaryLocationName"/>
+				</priorityGroup>
+				<priorityGroup>
+					<source valid="true" exif="LocationCreatedCountryCode"/>
+					<source valid="true" exif="CountryCode"/>
+					<source valid="true" exif="Country-PrimaryLocationCode"/>
+				</priorityGroup>
+			</value>
+			<value ns="vcard" tag="CITY">
+				<!-- unordered -->
+				<priorityGroup>
+					<source valid="true" exif="City">
+						<exception ns="http://ns.exiftool.ca/IPTC/IPTC/1.0/"/>
+						<exception ns="http://ns.exiftool.ca/IPTC/IPTC3/1.0/"/>
+					</source>
+					<source valid="true" exif="LocationCreatedCity"/>
+					<source valid="true" exif="DestinationCity"/>
+				</priorityGroup>
+				<priorityGroup ordered="true">
+					<source valid="true" exif="City" ns="http://ns.exiftool.ca/IPTC/IPTC/1.0/"/>
+					<source valid="true" exif="City" ns="http://ns.exiftool.ca/IPTC/IPTC3/1.0/"/>
+				</priorityGroup>
+				<priorityGroup>
+					<source valid="true" exif="HometownCity"/>
+				</priorityGroup>
+			</value>
+			<value ns="vcard" tag="STATE">
+				<priorityGroup ordered="true">
+					<source valid="true" exif="State"/>
+					<source valid="true" exif="Province-State"/>
+				</priorityGroup>
+			</value>
+			<value ns="vcard" tag="ORG">
+				<priorityGroup ordered="true">
+					<source valid="true" exif="Company"/>
+					<source valid="true" exif="Publisher"/>
+				</priorityGroup>
+			</value>
+			
 		</group>
-		<value ns="lom" tag="date">
-			<!-- unordered -->
-			<source valid="" exif="AccessDate"/>
-			<source valid="" exif="AcquisitionDate"/>
-			<source valid="" exif="ContainerLastModifyDate"/>
-			<source valid="" exif="ContentDate"/>
-			<source valid="" exif="CreateDate"/>
-			<source valid="" exif="Creation-date"/>
-			<source valid="" exif="CreationDate"/>
-			<source valid="" exif="CustomDate"/>
-			<source valid="" exif="Date"/>
-			<source valid="" exif="DateCompleted"/>
-			<source valid="" exif="DateCreated"/>
-			<source valid="" exif="DateEnregistrement"/>
-			<source valid="" exif="DateTime"/>
-			<source valid="" exif="DateTimeCreated"/>
-			<source valid="" exif="DateTimeDigitized"/>
-			<source valid="" exif="DateTimeOriginal"/>
-			<source valid="" exif="DateTimeStamp"/>
-			<source valid="" exif="DigitalCreationDate"/>
-			<source valid="" exif="DigitalCreationDateTime"/>
-			<source valid="" exif="ExtensionCreateDate"/>
-			<source valid="" exif="ExtensionModifyDate"/>
-			<source valid="" exif="FileModifyDate"/>
-			<source valid="" exif="FirmwareDate"/>
-			<source valid="" exif="GPSDateStamp"/>
-			<source valid="" exif="GPSDateTime"/>
-			<source valid="" exif="LinksUpToDate"/>
-			<source valid="" exif="ManufactureDate"/>
-			<source valid="" exif="ManufactureDate1"/>
-			<source valid="" exif="ManufactureDate2"/>
-			<source valid="" exif="MediaCreateDate"/>
-			<source valid="" exif="MediaJukeboxDate"/>
-			<source valid="" exif="MediajukeboxDate"/>
-			<source valid="" exif="MediaModifyDate"/>
+		<value ns="lom" tag="metadata_date">
 			<source valid="" exif="MetadataDate"/>
-			<source valid="" exif="MinoltaDate"/>
-			<source valid="" exif="ModDate"/>
-			<source valid="" exif="ModifyDate"/>
-			<source valid="" exif="PackageLastModifyDate"/>
-			<source valid="" exif="PatientBirthDate"/>
-			<source valid="" exif="ProfileDateTime"/>
-			<source valid="" exif="RecordedDate"/>
-			<source valid="" exif="RicohDate"/>
-			<source valid="" exif="SeriesDate"/>
-			<source valid="" exif="SourceDate"/>
-			<source valid="" exif="StudyDate"/>
-			<source valid="" exif="SubSecCreateDate"/>
-			<source valid="" exif="SubSecDateTimeOriginal"/>
-			<source valid="" exif="SubSecModifyDate"/>
-			<source valid="" exif="TrackCreateDate"/>
-			<source valid="" exif="TrackModifyDate"/>
-			<source valid="" exif="ZipModifyDate"/>
+		</value>
+		<value ns="lom" tag="create_date">
+			<priorityGroup>
+				<!-- unordered -->
+				<source valid="" exif="DateTimeOriginal"/>
+				<source valid="" exif="RecordedDate"/>
+				<source valid="" ns="http://ns.exiftool.ca/HTML/HTML-ncc/1.0/" exif="SourceDate"/>
+				<source valid="" exif="CreateDate"/>
+				<source valid="" exif="Creation-date"/>
+				<source valid="" exif="CreationDate"/>
+				<source valid="" exif="DateCreated"/>
+				<source valid="" exif="DateTimeCreated"/>
+				<source valid="" exif="MediaCreateDate"/>
+				<source valid="" exif="GPSDateStamp"/>
+				<source valid="" exif="GPSDateTime"/>
+			</priorityGroup>
+			<priorityGroup>
+			</priorityGroup>
+			<priorityGroup>
+				<source valid="" exif="TrackCreateDate"/>
+				<source valid="" exif="SubSecCreateDate" />
+				<source valid="" exif="ExtensionCreateDate"/>
+			</priorityGroup>
+			<priorityGroup>
+				<!-- unordered -->
+				<source valid="" exif="ContentDate"/>
+				<source valid="" exif="CustomDate"/>
+				<source valid="" exif="Date"/>
+				<source valid="" exif="DateCompleted"/>
+				<source valid="" exif="DateEnregistrement"/>
+				<source valid="" exif="DateTime"/>
+				<source valid="" exif="DateTimeDigitized"/>
+				<source valid="" exif="DigitalCreationDate"/>
+				<source valid="" exif="DigitalCreationDateTime"/>
+				<source valid="" exif="FirmwareDate"/>
+				<source valid="" exif="MinoltaDate"/>
+				<source valid="" exif="RicohDate"/>
+				<source valid="" exif="SeriesDate"/>
+				<source valid="" exif="StudyDate"/>
+				<source valid="" exif="AcquisitionDate"/>
+				<source valid="" exif="SubSecDateTimeOriginal"/>
+			</priorityGroup>
+			<source valid="false" exif="AccessDate"/>
+			<source valid="false" exif="PatientBirthDate"/>
+			<source valid="false" exif="MediaJukeboxDate"/>
+			<source valid="false" exif="MediajukeboxDate"/>
+			<source valid="false" exif="ProfileDateTime"/>
+			<source valid="false" exif="ManufactureDate"/>
+			<source valid="false" exif="ManufactureDate1"/>
+			<source valid="false" exif="ManufactureDate2"/>
+			<source valid="false" exif="LinksUpToDate"/>
+		</value>
+		<value ns="lom" tag="modify_date">
+			<priorityGroup>
+				<source valid="" exif="ContainerLastModifyDate" />
+				<source valid="" exif="DateTimeStamp"/>
+				<source valid="" exif="ModDate"/>
+				<source valid="" exif="ModifyDate"/>
+				<source valid="" exif="PackageLastModifyDate"/>
+			</priorityGroup>
+			<priorityGroup>
+				<source valid="" exif="FileModifyDate"/>
+			</priorityGroup>
+			<priorityGroup>
+				<source valid="" exif="MediaModifyDate"/>
+				<source valid="" exif="SubSecModifyDate"/>
+				<source valid="" exif="TrackModifyDate"/>
+				<source valid="" exif="ExtensionModifyDate"/>
+				<source valid="" exif="ZipModifyDate"/>
+			</priorityGroup>
 		</value>
 	</group>
 	<group lom="technical">
 		<value ns="lom" tag="size">
 			<!-- unordered -->
-			<source valid="" exif="AudioSize"/>
-			<source valid="" exif="AvgPacketSize"/>
-			<source valid="" exif="CompressedImageSize"/>
-			<source valid="" exif="DataSize"/>
-			<source valid="" exif="FileSize"/>
-			<source valid="" exif="FileSizeBytes"/>
-			<source valid="" exif="FilmSize"/>
-			<source valid="" exif="ImageDataSize"/>
-			<source valid="" exif="InitializedDataSize"/>
-			<source valid="" exif="KByteSize"/>
-			<source valid="" exif="MaxPacketSize"/>
-			<source valid="" exif="MinoltaImageSize"/>
-			<source valid="" exif="MinPacketSize"/>
-			<source valid="" exif="RawImageFullSize"/>
-			<source valid="" exif="RawImageSize"/>
-			<source valid="" exif="RawJpgSize"/>
-			<source valid="" exif="ResourceForkSize"/>
-			<source valid="" exif="TargetFileSize"/>
-			<source valid="" exif="VideoSize"/>
+			<priorityGroup ordered="true">
+				<!-- Symlink target -->
+				<source valid="" exif="TargetFileSize"/>
+				<source valid="" exif="FileSizeBytes"/>
+				<source valid="" exif="FileSize">
+						<exception ns="http://ns.exiftool.ca/XML/XML-File/1.0/"/>
+				</source>
+			</priorityGroup>
+			<priorityGroup>
+				<source valid="" exif="KByteSize"/>
+				<source valid="" exif="InitializedDataSize"/>
+				<source valid="" exif="ImageDataSize"/>
+				<source valid="" exif="CompressedImageSize"/>
+				<source valid="" exif="DataSize"/>
+				<source valid="" exif="VideoSize"/>
+				<source valid="" exif="AudioSize"/>
+			</priorityGroup>
+			<source valid="false" exif="FilmSize"/>
+			<source valid="false" exif="AvgPacketSize"/>
+			<source valid="false" exif="MaxPacketSize"/>
+			<source valid="false" exif="MinoltaImageSize"/>
+			<source valid="false" exif="MinPacketSize"/>
+			<source valid="false" exif="RawImageFullSize"/>
+			<source valid="false" exif="RawImageSize"/>
+			<source valid="false" exif="RawJpgSize"/>
+			<source valid="false" exif="ResourceForkSize"/>
 		</value>
 		<value ns="lom" tag="format">
+			<priorityGroup ordered="true">
+			<source valid="true" ns="http://ns.exiftool.ca/File/1.0/" exif="MIMEType"/>
+			<source valid="true" exif="MIMEType"/>
+			</priorityGroup>
+			<priorityGroup>
 			<!-- unordered -->
-			<source valid="" exif="AudioFormat"/>
+			<source valid="false" exif="AudioFormat"/>
 			<source valid="" exif="CoverArtMIMEType"/>
 			<source valid="" exif="FileFormat"/>
-			<source valid="" exif="FocalLengthIn35mmFormat"/>
+			<source valid="false" exif="FocalLengthIn35mmFormat"/>
 			<source valid="" exif="Format"/>
-			<source valid="" exif="ImageFormat"/>
-			<source valid="" exif="Information"/>
-			<source valid="" exif="MIMEType"/>
-			<source valid="" exif="MPImageFormat"/>
+			<source valid="false" exif="ImageFormat"/>
+			<source valid="false" exif="Information"/>
+			<source valid="false" exif="MPImageFormat"/>
 			<source valid="" exif="ObjectPreviewFileFormat"/>
-			<source valid="" exif="PhotoshopFormat"/>
-			<source valid="" exif="PictureFormat"/>
+			<source valid="false" exif="PhotoshopFormat"/>
+			<source valid="false" exif="PictureFormat"/>
 			<source valid="" exif="PictureMimeType"/>
-			<source valid="" exif="SerialNumberFormat"/>
+			<source valid="false" exif="SerialNumberFormat"/>
 			<source valid="" exif="StreamMimeType"/>
 			<source valid="" exif="SubfileMIMEType"/>
 			<source valid="" exif="TrackCommentsMimeType"/>
 			<source valid="" exif="TrackLyricsMimeType"/>
 			<source valid="" exif="Transformation"/>
 			<source valid="" exif="VideoFormat"/>
+			</priorityGroup>
 		</value>
 		<value ns="lom" tag="duration">
 			<!-- unordered -->
-			<source valid="" exif="DefaultDuration"/>
+			<priorityGroup ordered="true">
 				<source valid="" exif="Duration"/>
-				<source valid="" exif="Editing-duration"/>
 				<source valid="" exif="MediaDuration"/>
 				<source valid="" exif="PlayDuration"/>
-				<source valid="" exif="PreviewDuration"/>
-				<source valid="" exif="StreamDuration"/>
 				<source valid="" exif="TrackDuration"/>
+			</priorityGroup>
+			<priorityGroup>
+				<source valid="" exif="DefaultDuration"/>
+				<source valid="" exif="StreamDuration"/>
+				<source valid="" exif="Editing-duration"/>
+			</priorityGroup>
+			<source valid="false" exif="PreviewDuration"/>
+			<source valid="false" exif="DefaultDuration"/>
 		</value>
 	</group>
 	<group lom="rights">
 		<value ns="lom" tag="copydescription">
-			<source ordered="true" valid="true" ns="http://ns.exiftool.ca/XMP/XMP-dc/1.0/" exif="Rights"/>
-			<source ordered="true" valid="true" exif="Rights-fr"/>
-			<source ordered="true" valid="true" exif="Rights"/>
-			<source ordered="true" valid="false" ns="http://ns.exiftool.ca/PSP/PSP/1.0/" exif="Copyright"/>
-			<source ordered="true" valid="false" ns="http://ns.exiftool.ca/EXIF/IFD0/1.0/" exif="Copyright"/>
-			<source ordered="true" valid="false" ns="http://ns.exiftool.ca/Real/Real-RA4/1.0/" exif="Copyright"/>
-			<source ordered="true" valid="true" exif="Copyright"/>
-			<source ordered="true" valid="true" exif="Copyright-fr"/>
-			<source ordered="true" valid="true" exif="Copyright-fr-CA"/>
-			<source ordered="true" valid="true" exif="Copyright-fr-FR"/>
-			<source ordered="true" valid="true" exif="Copyright-en"/>
-			<source ordered="true" valid="true" exif="Copyright-en-US"/>
-			<source ordered="true" valid="true" exif="Copyright-he"/>
-			<source ordered="true" valid="true" exif="CopyrightNotice"/>
+			<priorityGroup ordered="true">
+				<source valid="true" ns="http://ns.exiftool.ca/XMP/XMP-dc/1.0/" exif="Rights"/>
+				<source valid="true" exif="Rights-fr"/>
+				<source valid="true" exif="Rights"/>
+				<source valid="true" exif="Copyright" ns="http://ns.exiftool.ca/MIE/MIE-Doc/1.0/" />
+				<source valid="true" exif="Copyright">
+					<exception ns="http://ns.exiftool.ca/EXIF/IFD0/1.0/"/>
+					<exception ns="http://ns.exiftool.ca/MIE/MIE-Doc/1.0/"/>
+				</source>
+				<source valid="true" exif="Copyright-fr"/>
+				<source valid="true" exif="Copyright-fr-CA"/>
+				<source valid="true" exif="Copyright-fr-FR"/>
+				<source valid="true" exif="Copyright-en"/>
+				<source valid="true" exif="Copyright-en-US"/>
+				<source valid="true" exif="Copyright-he"/>
+				<source valid="true" exif="CopyrightNotice"/>
+				<source valid="true" exif="Copyright" ns="http://ns.exiftool.ca/EXIF/IFD0/1.0/"/>
+				<source valid="true" exif="LicenseInfoURL" />
+			</priorityGroup>
 			<!-- unordered -->
 			<source valid="true" exif="LegalCopyright"/>
 		</value>
