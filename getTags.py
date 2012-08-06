@@ -1,15 +1,11 @@
 #!/usr/bin/env python2.7
 
-from lxml import etree
+import sys
 from multiprocessing import Pool, cpu_count
-from subprocess import check_call
-from os.path import exists
-from utils import example_files
+from utils import getExampleFiles, getExifXml
 from tags import tags as old_tags
 
 from namespaces import ns
-
-exifTestsImageDir = '/Users/maparent/OpenSource/Image-ExifTool-8.61/t/images/'
 
 setns = set(ns.values())
 
@@ -22,10 +18,7 @@ def nameElements(node):
     return (None, None, tag)
 
 def getKeys(fname):
-    fname2=fname+'.exif.xml'
-    if not exists(fname2):
-        check_call(['exiftool', '-X', '-w', '%d%f.%e.exif.xml', fname])
-    content = etree.parse(fname2)
+    content = getExifXml(fname)
     nodes = content.xpath('/rdf:RDF/rdf:Description/*', namespaces=ns)
     names = set([nameElements(node) for node in nodes])
     return names
@@ -45,6 +38,7 @@ def writeNames(old_tags, new_tags):
 
 if __name__ == '__main__':
     pool = Pool(cpu_count())
+    example_files = getExampleFiles(sys.argv[1:])
     tags = pool.map(getKeys, example_files)
     tags = reduce(set.union, tags, set())
     old_tags_set = set(old_tags)
