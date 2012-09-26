@@ -1,6 +1,6 @@
 PATH := $(PATH):.
 
-EXIF := /Users/maparent/OpenSource/Image-ExifTool-8.62
+EXIF := /Users/maparent/OpenSource/Image-ExifTool-9.02
 EXIF_IMG := $(EXIF)/t/images/
 PERL_LIBS := /Library/Perl/5.12/
 PERL_TYPE := darwin-thread-multi-2level
@@ -34,7 +34,13 @@ translation.xsl: translations.xml to_xsl.xsl
 	multimarkdown -o $@ $<
 
 numtags.mmd: translations.xml
-	test_files.py numtags > $@
+	test_files.py --exampledir tests --exampledir $(EXIF_IMG) numtags > $@
+
+numtags.csv: translations.xml
+	test_files.py --exampledir tests --exampledir $(EXIF_IMG) numtags_csv > $@
+
+%.tex: %.mmd
+	multimarkdown -t latex -o $@ $<
 
 Exif2LOM.app: exif2lom.pl exif2lom.platypus
 	platypus -P Exif2LOM.platypus -y Exif2LOM.app
@@ -52,4 +58,4 @@ Exif2LOM.dmg: Exif2LOM.app
 	hdiutil create -ov -format UDZO -srcfolder Exif2LOM.app -volname exif2lom Exif2LOM.dmg
 
 push: Exif2LOM.dmg
-	scp Exif2LOM.dmg ntic.org:/var/www/ntic.org/html/docs/Exif2LOM.dmg
+	scp Exif2LOM.dmg vteducation.org:/var/www/vteducation.org/html/docs/Exif2LOM.dmg
